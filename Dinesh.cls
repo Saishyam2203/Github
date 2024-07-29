@@ -59,4 +59,3 @@ public class UserTriggerHandler {
             delete membersToBeDeleted;
         }
     }
-}
