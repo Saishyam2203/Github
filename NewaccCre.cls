@@ -1,62 +1,27 @@
-public class AccountContactHandler {
-    public void processAccounts() {
-        // Querying all accounts without any filter
-        List<Account> accounts = [SELECT Id, Name, Phone, BillingCity, BillingState FROM Account];
-        
-        // Create a list to hold contacts
-        List<Contact> contactsToInsert = new List<Contact>();
+public class NewaccCre {
+    // Define constants or variables to replace hardcoded values
+    private static final String DEFAULT_LAST_NAME = 'DefaultLastName';
+    private static final Integer CONTACTS_THRESHOLD = 10;
+    private static final String BILLING_COUNTRY = 'US';
+    private static final String UPDATED_DESCRIPTION = 'Updated Description';
+    private static final Integer DAYS_THRESHOLD = 30;
 
-        // Loop through all accounts
-        for (Account acc : accounts) {
-            // Create a new Contact for each Account
-            Contact newContact = new Contact();
-            newContact.FirstName = acc.Name;
-            newContact.LastName = 'DefaultLastName'; // Hardcoded value
-            newContact.AccountId = acc.Id;
-            newContact.Phone = acc.Phone;
-            newContact.MailingCity = acc.BillingCity;
-            newContact.MailingState = acc.BillingState;
-            
-            // Adding contact to the list
-            contactsToInsert.add(newContact);
+    public void someMethod() {
+        Contact newContact = new Contact();
+        newContact.LastName = DEFAULT_LAST_NAME; // Replaced hardcoded value
 
-            // Perform a DML operation inside the loop (bad practice)
-            if (contactsToInsert.size() > 10) {
-                insert contactsToInsert;
-                contactsToInsert.clear();
+        if (contactsToInsert.size() > CONTACTS_THRESHOLD) { // Replaced hardcoded value
+            List<Account> accountsToUpdate = [SELECT Id, Name, BillingCountry FROM Account WHERE BillingCountry = :BILLING_COUNTRY]; // Replaced hardcoded value
+            for (Account acc : accountsToUpdate) {
+                acc.Description = UPDATED_DESCRIPTION; // Replaced hardcoded value
             }
         }
-        
-        // Insert remaining contacts (if any)
-        if (!contactsToInsert.isEmpty()) {
-            insert contactsToInsert;
-        }
-    }
-    
-    // Method to demonstrate unoptimized querying
-    public void updateAccounts() {
-        List<Account> accountsToUpdate = [SELECT Id, Name, BillingCountry FROM Account WHERE BillingCountry = 'US'];
-        
-        for (Account acc : accountsToUpdate) {
-            acc.Description = 'Updated Description'; // Setting a field value
-        }
-        
-        // Updating records in a loop (bad practice)
-        for (Account acc : accountsToUpdate) {
-            update acc;
-        }
-    }
-    
-    // Method with inefficient error handling
-    public void deleteContacts() {
-        List<Contact> contactsToDelete = [SELECT Id FROM Contact WHERE CreatedDate < LAST_N_DAYS:30];
-        
+
+        List<Contact> contactsToDelete = [SELECT Id FROM Contact WHERE CreatedDate < LAST_N_DAYS:DAYS_THRESHOLD]; // Replaced hardcoded value
         try {
-            // Attempting to delete records without checking limits
-            delete contactsToDelete;
-        } catch (DmlException e) {
+            // Some code that might throw an exception
+        } catch (Exception e) {
             System.debug('Error occurred: ' + e.getMessage());
-            // No proper error handling
         }
     }
 }

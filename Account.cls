@@ -28,4 +28,3 @@ public class AccountHelper {
             delete acc;
         }
     }
-}
